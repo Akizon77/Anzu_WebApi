@@ -9,9 +9,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"strings"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
@@ -215,17 +216,16 @@ func UpdateCache(link string, update []Types.Update) error {
 			users = append(users, user)
 		}
 	}
-
-	for _, user := range users {
-		for i, t := range updates {
-			go func(interval int, chatid int64, message string) {
-				duration, _ := time.ParseDuration(fmt.Sprint(interval, "s"))
-				ticker := time.NewTicker(duration)
+	go func(users []int64, updates []Types.Update) {
+		for _, user := range users {
+			for _, t := range updates {
+				ticker := time.NewTicker(2 * time.Second)
 				<-ticker.C
-				Messager.TelegramPush(chatid, message)
-			}(i, user, fmt.Sprint("#RSS ", t.Title, "\n", t.Link))
+				Messager.TelegramPush(user, fmt.Sprint("#RSS ", t.Title, "\n", t.Link))
+			}
 		}
-	}
+	}(users, updates)
+
 	//更新缓存
 	_, err = db.Exec("UPDATE `RssSubs` SET caches = ? WHERE link = ?", string(bytes), link)
 	if err != nil {

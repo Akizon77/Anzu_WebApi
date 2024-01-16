@@ -13,8 +13,6 @@ func StartRssAutoRefresh(seconds int) {
 	duration, _ := time.ParseDuration(fmt.Sprint(seconds, "s"))
 	ticker := time.NewTicker(duration)
 	for {
-		log.Debug("Timer is running")
-		<-ticker.C
 		log.Debug("Updating rss")
 		links := Database.GetAllLinks()
 		for _, link := range links {
@@ -29,6 +27,7 @@ func StartRssAutoRefresh(seconds int) {
 			}
 		}
 		log.Debug("Updating rss done")
+		<-ticker.C
 	}
 }
 func UpdateRssNow() {
