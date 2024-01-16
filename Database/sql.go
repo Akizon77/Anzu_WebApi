@@ -11,6 +11,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"strings"
+	"time"
 )
 
 var (
@@ -216,10 +217,13 @@ func UpdateCache(link string, update []Types.Update) error {
 	}
 
 	for _, user := range users {
-		for _, t := range updates {
-			go func(chatid int64, message string) {
+		for i, t := range updates {
+			go func(interval int, chatid int64, message string) {
+				duration, _ := time.ParseDuration(fmt.Sprint(interval, "s"))
+				ticker := time.NewTicker(duration)
+				<-ticker.C
 				Messager.TelegramPush(chatid, message)
-			}(user, fmt.Sprint("#RSS ", t.Title, "\n", t.Link))
+			}(i, user, fmt.Sprint("#RSS ", t.Title, "\n", t.Link))
 		}
 	}
 	//更新缓存

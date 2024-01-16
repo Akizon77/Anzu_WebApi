@@ -6,8 +6,9 @@ import (
 	"Anzu_WebApi/Database"
 	"Anzu_WebApi/Timer"
 	"Anzu_WebApi/Types"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 var cfg *Config.Config
