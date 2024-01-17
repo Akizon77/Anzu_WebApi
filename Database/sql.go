@@ -211,7 +211,7 @@ func UpdateCache(link string, update []Types.Update) error {
 			user int64
 			li   string
 		)
-		rows.Scan(&li, &user)
+		rows.Scan(&user, &li)
 		if li == link {
 			users = append(users, user)
 		}
