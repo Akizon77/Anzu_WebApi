@@ -205,7 +205,7 @@ func UpdateCache(link string, update []Types.Update) error {
 	updates := findExtraElements(update, cache)
 	//获取订阅了link的用户列表
 	var users []int64
-	rows, _ := db.Query(`SELECT link, GROUP_CONCAT(user) AS users FROM RssSubs GROUP BY link`)
+	rows, _ := db.Query("SELECT user,link FROM `RssSubs`")
 	for rows.Next() {
 		var (
 			user int64
